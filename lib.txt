@@ -1,0 +1,1 @@
+npm install react-copy-to-clipboard simple-peer socket.io-client
