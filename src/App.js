@@ -3,7 +3,6 @@ import "./App.css";
 import Peer from "simple-peer";
 import io from "socket.io-client";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { Grid, Switch, Button, TextField, Paper } from "@material-ui/core";
 
 const socket = io.connect("https://ipeach-videocall.herokuapp.com/");
 function App() {
@@ -92,111 +91,115 @@ function App() {
   };
 
   return (
-    <form noValidate autoComplete="off">
-    <Paper>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <div className="video-container">
-            <div id="CallerVideo" className="video">
-              {stream && (
-                <video
-                  playsInline
-                  muted
-                  ref={myVideo}
-                  autoPlay
-                  style={{ width: "300px" }}
-                />
-              )}
-            </div>
-            <div id="RecieverVideo" className="video">
-              {callAccepted && !callEnded ? (
-                <video
-                  playsInline
-                  ref={userVideo}
-                  autoPlay
-                  style={{ width: "300px" }}
-                />
-              ) : null}
-            </div>
-          </div>
+    <div className="container-fluid">
+      <div className="row justify-content-center">
+        <div id="CallerVideo" className="video card m-1 p-1 col-md-5">
+          {stream && (
+            <video
+              playsInline
+              muted
+              ref={myVideo}
+              autoPlay
+              style={{ width: "100%", hieght: "100%" }}
+            />
+          )}
           <div className="myId">
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Switch
-                  checked={turnCamera}
-                  onChange={(e) => checkTurnCamera(e)}
-                  name="checkedB"
-                  color="primary"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  id="txtName"
-                  label="Your name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  disabled
-                  id="filled-disabled"
-                  label="Your ID"
-                  value={me}
-                />
-                <CopyToClipboard text={me}>
-                  <Button variant="contained">Copy ID</Button>
-                </CopyToClipboard>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  id="txtCallTo"
-                  label="Call to ID"
-                  value={idToCall}
-                  onChange={(e) => setIdToCall(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <div className="call-button">
-                  {callAccepted && !callEnded ? (
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={leaveCall}
-                    >
-                      End Call
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      onClick={() => callUser(idToCall)}
-                      color="primary"
-                    >
-                      Call
-                    </Button>
-                  )}
-                </div>
-              </Grid>
-            </Grid>
+            <div className="form-check form-switch">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="chkTurnCamera"
+                checked={turnCamera}
+                onChange={(e) => checkTurnCamera(e)}
+              />
+              <label className="form-check-label" htmlFor="lblTurnCamera">
+                Turn On/Off Camera
+              </label>
+            </div>
+            <label className="form-label" htmlFor="txtName">
+              Your name
+            </label>
+            <input
+              type="text"
+              id="txtName"
+              className="form-control form-control-sm"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <label className="form-label" htmlFor="txtName">
+              Your ID
+            </label>
+            <div className="input-group">
+              <input
+                disabled
+                className="form-control form-control-sm"
+                type="text"
+                value={me}
+              />
+              <CopyToClipboard text={me}>
+                <button id="btnCopyID" className="btn btn-secondary btn-sm">
+                  Copy ID
+                </button>
+              </CopyToClipboard>
+            </div>
           </div>
-          <div className="calling">
+        </div>
+        <div id="RecieverVideo" className="video card m-1 p-1 col-md-5">
+          <div className="callTo">
             {receivingCall && !callAccepted ? (
               <div className="caller">
-                <h1>{name} is Calling...</h1>
-                <Button
-                  variant="contained"
+                <h3>{name} is Calling...</h3>
+                <button
+                  id="btnAnswer"
+                  className="btn btn-success btn-sm"
                   onClick={answerCall}
-                  color="primary"
                 >
                   Answer
-                </Button>
+                </button>
               </div>
             ) : null}
           </div>
-        </Grid>
-      </Grid>
-    </Paper>
-    </form>
+          {callAccepted && !callEnded ? (
+            <video
+              playsInline
+              ref={userVideo}
+              autoPlay
+              style={{ width: "100%", hieght: "100%" }}
+            />
+          ) : null}
+
+          <label className="form-label" htmlFor="txtCallTo">
+            Call to ID
+          </label>
+          <div className="input-group">
+            <input
+              id="txtCallTo"
+              className="form-control form-control-sm"
+              type="text"
+              value={idToCall}
+              onChange={(e) => setIdToCall(e.target.value)}
+            />
+            {callAccepted && !callEnded ? (
+              <button
+                id="btnEndCall"
+                className="btn btn-danger btn-sm"
+                onClick={leaveCall}
+              >
+                End Call
+              </button>
+            ) : (
+              <button
+                id="btnCall"
+                className="btn btn-primary btn-sm"
+                onClick={() => callUser(idToCall)}
+              >
+                Call
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
